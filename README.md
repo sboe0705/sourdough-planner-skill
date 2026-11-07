@@ -72,6 +72,7 @@ cd sourdough-planner-skill && zip -r plan-sourdough-bake.zip plan-sourdough-bake
 | `plan-sourdough-bake/references/manual-scheduling.md` | The same algorithm by hand, for agents without code execution |
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
 | `install.sh` | Symlinks (or copies) the skill into a skills directory |
+| `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
 | `tests/` | Unit tests for the engine |
 
 You can also run the engine on its own:
@@ -98,6 +99,8 @@ python3 plan-sourdough-bake/scripts/schedule.py --help
 ```bash
 python3 -m unittest discover tests
 ```
+
+[`CLAUDE.md`](CLAUDE.md) holds the development guide: architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `CLAUDE.md` up to date with every change.
 
 ## License
 
