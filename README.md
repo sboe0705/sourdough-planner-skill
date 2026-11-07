@@ -54,11 +54,13 @@ cd sourdough-planner-skill
 | `--force` | replace an existing `plan-sourdough-bake` entry |
 | `--uninstall` | remove the installed skill (only a link or copy of this skill, nothing else) |
 
-**Claude.ai / Claude Desktop:** zip the folder and upload it under *Settings → Capabilities → Skills*:
+**Claude.ai / Claude Desktop:** build the zip package and upload it under *Settings → Capabilities → Skills* (code execution must be turned on):
 
 ```bash
-cd sourdough-planner-skill && zip -r plan-sourdough-bake.zip plan-sourdough-bake
+cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 ```
+
+`build.sh` checks the `SKILL.md` frontmatter (name and description limits), runs the unit tests, and writes a reproducible zip with the skill folder at its root and without caches. Options: `--output FILE` for another destination, `--skip-tests` to package without testing.
 
 **Other agents** that support the Agent Skills format: point them at the folder. The skill needs Python 3.9+ for the scheduler, with no third-party packages. If an agent can't run code, it falls back to the documented manual procedure.
 
@@ -72,6 +74,7 @@ cd sourdough-planner-skill && zip -r plan-sourdough-bake.zip plan-sourdough-bake
 | `plan-sourdough-bake/references/manual-scheduling.md` | The same algorithm by hand, for agents without code execution |
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
 | `install.sh` | Symlinks (or copies) the skill into a skills directory |
+| `build.sh` | Packages the skill as `dist/plan-sourdough-bake.zip` for upload to Claude.ai and other agents |
 | `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
 | `tests/` | Unit tests for the engine |
 

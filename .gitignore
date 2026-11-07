@@ -3,3 +3,4 @@ __pycache__/
 *.ics
 *.zip
 .DS_Store
+dist/

@@ -8,7 +8,7 @@ The skill is meant for public use, in Claude Code, Claude.ai/Desktop and other a
 
 **Origin:** the scheduling model and the recipe data model come from the Schedoughler app (`/home/sboe0705/Projekte/schedoughler`, https://github.com/sboe0705/schedoughler). Its `src/scheduler.js` (`computeSchedule`, `effectiveDuration`), `check-critical-times.sh` and the `add-recipe` / `tune-ideal-finish` skills are the reference. `schedule.py` is a port of that logic with extensions (see **Scheduling rules**).
 
-**Tech stack:** Python 3 **standard library only** (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh`. No dependencies, no build step.
+**Tech stack:** Python 3 **standard library only** (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh` and `build.sh`. No dependencies; the only "build" is zipping the skill folder.
 
 ## Commands
 
@@ -22,7 +22,7 @@ python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T
 python3 plan-sourdough-bake/scripts/schedule.py --help
 
 ./install.sh                 # symlink the skill into ~/.claude/skills (--project, --target, --copy, --force, --uninstall)
-zip -r plan-sourdough-bake.zip plan-sourdough-bake   # package for upload to Claude.ai
+./build.sh                   # check frontmatter, run tests, write dist/plan-sourdough-bake.zip (--output, --skip-tests)
 ```
 
 The skill is installed on this machine via `install.sh`: `~/.claude/skills/plan-sourdough-bake` is a symlink to this repo's `plan-sourdough-bake/` folder, so edits take effect in the next Claude Code session.
@@ -38,6 +38,7 @@ plan-sourdough-bake/              # ← the skill itself; everything the agent s
 └── examples/country-loaf.json    # self-written example recipe
 tests/test_schedule.py            # unittest suite for schedule.py (incl. CLI via subprocess)
 install.sh                        # symlinks/copies the skill into a skills directory
+build.sh                          # packages the skill as a reproducible zip in dist/ (git-ignored)
 README.md                         # public documentation (what it does, install, usage, how it decides)
 CLAUDE.md                         # this file
 LICENSE                           # Apache-2.0
