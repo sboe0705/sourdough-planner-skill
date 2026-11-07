@@ -38,12 +38,21 @@ Other things you can ask:
 
 The skill is the [`plan-sourdough-bake/`](plan-sourdough-bake/) folder.
 
-**Claude Code:** copy or symlink it into your personal skills directory (or a project's `.claude/skills/`):
+**Claude Code:** clone the repository and run `install.sh`. It symlinks the skill into your personal skills directory, so a later `git pull` updates the installed skill too:
 
 ```bash
 git clone https://github.com/sboe0705/sourdough-planner-skill.git
-ln -s "$PWD/sourdough-planner-skill/plan-sourdough-bake" ~/.claude/skills/plan-sourdough-bake
+cd sourdough-planner-skill
+./install.sh                        # ~/.claude/skills/plan-sourdough-bake -> this repo
 ```
+
+| Option | Effect |
+|---|---|
+| `--project DIR` | install into `DIR/.claude/skills` (one project only) |
+| `--target DIR` | install into any skills directory, for other agents |
+| `--copy` | copy the files instead of symlinking (e.g. when the repo will be moved or deleted) |
+| `--force` | replace an existing `plan-sourdough-bake` entry |
+| `--uninstall` | remove the installed skill (only a link or copy of this skill, nothing else) |
 
 **Claude.ai / Claude Desktop:** zip the folder and upload it under *Settings → Capabilities → Skills*:
 
@@ -62,6 +71,7 @@ cd sourdough-planner-skill && zip -r plan-sourdough-bake.zip plan-sourdough-bake
 | `plan-sourdough-bake/references/recipe-format.md` | Recipe JSON format and rules for converting recipes |
 | `plan-sourdough-bake/references/manual-scheduling.md` | The same algorithm by hand, for agents without code execution |
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
+| `install.sh` | Symlinks (or copies) the skill into a skills directory |
 | `tests/` | Unit tests for the engine |
 
 You can also run the engine on its own:
