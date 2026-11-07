@@ -1,0 +1,85 @@
+{
+  "name": "Country Sourdough Loaf",
+  "subtitle": "Open-crumb wheat loaf with a little whole wheat, retarded overnight",
+  "steps": [
+    {
+      "title": "Build the levain",
+      "dur": 10,
+      "kind": "prep",
+      "desc": "Stir starter, flour and lukewarm water into a smooth paste in a clean jar, mark the level and cover loosely.",
+      "ingredients": [
+        { "amount": 20, "unit": "g", "name": "active sourdough starter" },
+        { "amount": 50, "unit": "g", "name": "flour", "note": "half bread flour, half whole wheat" },
+        { "amount": 50, "unit": "g", "name": "water", "note": "lukewarm" }
+      ]
+    },
+    {
+      "title": "Let the levain ripen",
+      "dur": 300,
+      "min": 240,
+      "max": 480,
+      "step": 30,
+      "kind": "rise",
+      "desc": "Leave at room temperature until doubled, domed and bubbly; a spoonful should float in water."
+    },
+    {
+      "title": "Mix the dough",
+      "dur": 20,
+      "kind": "prep",
+      "desc": "Dissolve the levain in the water, add the flours and mix until no dry flour remains, rest 20 minutes, then squeeze in the salt.",
+      "ingredients": [
+        { "name": "levain" },
+        { "amount": 450, "unit": "g", "name": "bread flour" },
+        { "amount": 50, "unit": "g", "name": "whole wheat flour" },
+        { "amount": 350, "unit": "g", "name": "water", "note": "about 26 °C" },
+        { "amount": 10, "unit": "g", "name": "salt" }
+      ]
+    },
+    {
+      "title": "Bulk fermentation",
+      "dur": 240,
+      "min": 180,
+      "max": 300,
+      "step": 15,
+      "kind": "rise",
+      "desc": "Cover and leave at room temperature until risen by about half; do four sets of stretch and folds, 30 minutes apart, during the first two hours."
+    },
+    {
+      "title": "Pre-shape",
+      "dur": 10,
+      "kind": "prep",
+      "desc": "Turn the dough out onto an unfloured counter and round it loosely with a bench scraper."
+    },
+    {
+      "title": "Bench rest",
+      "dur": 30,
+      "min": 20,
+      "max": 40,
+      "step": 5,
+      "kind": "rise",
+      "desc": "Leave uncovered until the dough has relaxed and spread a little."
+    },
+    {
+      "title": "Final shape",
+      "dur": 10,
+      "kind": "prep",
+      "desc": "Shape a tight boule or batard and place it seam side up in a floured banneton."
+    },
+    {
+      "title": "Cold retard",
+      "dur": 720,
+      "min": 480,
+      "max": 960,
+      "step": 60,
+      "kind": "cold",
+      "desc": "Cover the banneton and refrigerate."
+    },
+    {
+      "title": "Bake",
+      "dur": 45,
+      "kind": "bake",
+      "preheat": 45,
+      "desc": "Preheat the oven with a Dutch oven inside to 250 °C, turn the cold dough out, score and bake 20 minutes covered, then 25 minutes uncovered at 230 °C until deep brown."
+    }
+  ]
+}
