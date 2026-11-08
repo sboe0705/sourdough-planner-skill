@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.x"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Check Python 3.9 syntax
+        run: python3 -c "import ast; ast.parse(open('plan-sourdough-bake/scripts/schedule.py').read(), feature_version=(3,9))"
+      - name: Run unit tests
+        run: python3 -m unittest discover -v tests
+
+  package:
+    name: Package skill
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Build zip
+        run: ./build.sh --skip-tests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plan-sourdough-bake
+          path: dist/plan-sourdough-bake.zip
+          if-no-files-found: error

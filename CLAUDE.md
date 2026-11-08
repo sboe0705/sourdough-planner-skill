@@ -39,6 +39,8 @@ plan-sourdough-bake/              # ← the skill itself; everything the agent s
 tests/test_schedule.py            # unittest suite for schedule.py (incl. CLI via subprocess)
 install.sh                        # symlinks/copies the skill into a skills directory
 build.sh                          # packages the skill as a reproducible zip in dist/ (git-ignored)
+.github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x), then build.sh → zip artifact
+.github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
 README.md                         # public documentation (what it does, install, usage, how it decides)
 CLAUDE.md                         # this file
 LICENSE                           # Apache-2.0
@@ -112,6 +114,15 @@ These rules are described in four places: `schedule.py`, `references/manual-sche
 - `CLAUDE.md` covers structure, commands, architecture, rules and conventions.
 
 Also keep `SKILL.md` and the `references/` files in sync with the script's behaviour. Docs that contradict the code are a bug.
+
+## Releases
+
+- CI (`build.yml`) runs on every push to `main` and every pull request. Keep it green.
+- To release, tag a commit on `main` with a semantic version and push the tag:
+  ```bash
+  git tag v1.0.0 && git push origin v1.0.0
+  ```
+  `release.yml` runs `build.sh` (tests included) and creates a GitHub release named after the tag, with generated notes and `plan-sourdough-bake.zip` attached. The asset name stays the same across versions, so `releases/latest/download/plan-sourdough-bake.zip` always points at the newest build.
 
 ## Git Workflow
 

@@ -54,7 +54,7 @@ cd sourdough-planner-skill
 | `--force` | replace an existing `plan-sourdough-bake` entry |
 | `--uninstall` | remove the installed skill (only a link or copy of this skill, nothing else) |
 
-**Claude.ai / Claude Desktop:** build the zip package and upload it under *Settings → Capabilities → Skills* (code execution must be turned on):
+**Claude.ai / Claude Desktop:** download `plan-sourdough-bake.zip` from the [latest release](https://github.com/sboe0705/sourdough-planner-skill/releases/latest) and upload it under *Settings → Capabilities → Skills* (code execution must be turned on). Or build the zip yourself:
 
 ```bash
 cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
@@ -75,6 +75,8 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
 | `install.sh` | Symlinks (or copies) the skill into a skills directory |
 | `build.sh` | Packages the skill as `dist/plan-sourdough-bake.zip` for upload to Claude.ai and other agents |
+| `.github/workflows/build.yml` | CI: tests on Python 3.9 and current 3.x, then packages the zip as a workflow artifact |
+| `.github/workflows/release.yml` | Publishes a GitHub release with the zip when a `v*` tag is pushed |
 | `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
 | `tests/` | Unit tests for the engine |
 
