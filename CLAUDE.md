@@ -28,6 +28,7 @@ pdftoppm -png -r 80 plan.pdf preview     # look at the page before shipping layo
 
 ./install.sh                 # symlink the skill into ~/.claude/skills (--project, --target, --copy, --force, --uninstall)
 ./build.sh                   # check frontmatter, run tests, write dist/plan-sourdough-bake.zip (--output, --skip-tests)
+./release.sh                 # tag + push the next release version (--version, --yes, --skip-tests, --dry-run)
 ```
 
 The skill is installed on this machine via `install.sh`: `~/.claude/skills/plan-sourdough-bake` is a symlink to this repo's `plan-sourdough-bake/` folder, so edits take effect in the next Claude Code session.
@@ -46,6 +47,7 @@ tests/test_schedule.py            # unittest suite for schedule.py (incl. CLI vi
 tests/test_make_pdf.py            # unittest suite for make_pdf.py (rendering tests skip without reportlab)
 install.sh                        # symlinks/copies the skill into a skills directory
 build.sh                          # packages the skill as a reproducible zip in dist/ (git-ignored)
+release.sh                        # tags a release: shows the latest tag and commits since, suggests the next version, pushes
 .github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x, with reportlab installed), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
 .github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
 README.md                         # public documentation (what it does, install, usage, how it decides)
@@ -135,9 +137,9 @@ Also keep `SKILL.md` and the `references/` files in sync with the script's behav
 ## Releases
 
 - CI (`build.yml`) runs on every push to `main` and every pull request. Keep it green.
-- To release, tag a commit on `main` with a semantic version and push the tag:
+- To release, run `./release.sh` on a clean, up-to-date `main`. It shows the latest `v*` tag and the commits since, pre-fills a suggested version (major if a commit message says `BREAKING`, minor if a subject starts with "add" or "remove", patch otherwise; editable), runs the tests, pushes `main` if it has unpushed commits, then creates an annotated tag and pushes it. `--dry-run` shows what it would do. By hand, the same is:
   ```bash
-  git tag v1.0.0 && git push origin v1.0.0
+  git tag -a v1.0.0 -m v1.0.0 && git push origin v1.0.0
   ```
   `release.yml` runs `build.sh` (tests included) and creates a GitHub release named after the tag, with generated notes and `plan-sourdough-bake.zip` attached. The asset name stays the same across versions, so `releases/latest/download/plan-sourdough-bake.zip` always points at the newest build.
 
