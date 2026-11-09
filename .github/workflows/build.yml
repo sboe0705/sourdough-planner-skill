@@ -43,8 +43,11 @@ jobs:
           python-version: "3.x"
       - name: Build zip
         run: ./build.sh --skip-tests
-      - uses: actions/upload-artifact@v4
+      # archive: false uploads the zip as-is instead of wrapping it in a
+      # second zip; the artifact is then named after the file
+      # (plan-sourdough-bake.zip) and can be uploaded to an agent directly.
+      - uses: actions/upload-artifact@v7
         with:
-          name: plan-sourdough-bake
           path: dist/plan-sourdough-bake.zip
+          archive: false
           if-no-files-found: error

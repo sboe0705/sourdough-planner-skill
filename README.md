@@ -75,7 +75,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
 | `install.sh` | Symlinks (or copies) the skill into a skills directory |
 | `build.sh` | Packages the skill as `dist/plan-sourdough-bake.zip` for upload to Claude.ai and other agents |
-| `.github/workflows/build.yml` | CI: tests on Python 3.9 and current 3.x, then packages the zip as a workflow artifact |
+| `.github/workflows/build.yml` | CI: tests on Python 3.9 and current 3.x, then uploads the zip as a workflow artifact, unwrapped (no zip-in-zip), so it can be uploaded to an agent as downloaded |
 | `.github/workflows/release.yml` | Publishes a GitHub release with the zip when a `v*` tag is pushed |
 | `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
 | `tests/` | Unit tests for the engine |

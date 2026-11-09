@@ -39,7 +39,7 @@ plan-sourdough-bake/              # ← the skill itself; everything the agent s
 tests/test_schedule.py            # unittest suite for schedule.py (incl. CLI via subprocess)
 install.sh                        # symlinks/copies the skill into a skills directory
 build.sh                          # packages the skill as a reproducible zip in dist/ (git-ignored)
-.github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x), then build.sh → zip artifact
+.github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
 .github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
 README.md                         # public documentation (what it does, install, usage, how it decides)
 CLAUDE.md                         # this file
