@@ -59,10 +59,15 @@ fi
 
 mkdir -p "$(dirname "$OUTPUT")"
 
-python3 -I - "$SOURCE" "$SKILL_NAME" "$OUTPUT" <<'PY'
+if [[ ! -f "$SCRIPT_DIR/LICENSE" ]]; then
+  echo "error: LICENSE not found next to build.sh" >&2
+  exit 1
+fi
+
+python3 -I - "$SOURCE" "$SKILL_NAME" "$OUTPUT" "$SCRIPT_DIR/LICENSE" <<'PY'
 import os, re, sys, zipfile
 
-source, skill_name, output = sys.argv[1:4]
+source, skill_name, output, license_path = sys.argv[1:5]
 
 # --- validate the SKILL.md frontmatter -------------------------------------
 with open(os.path.join(source, "SKILL.md"), encoding="utf-8") as f:
@@ -100,13 +105,21 @@ for root, dirs, names in os.walk(source):
         if n in SKIP_FILES or n.endswith((".pyc", ".pyo")) or n.startswith("."):
             continue
         files.append(os.path.join(root, n))
+# the repo-root LICENSE ships inside the skill folder (Apache-2.0 §4a)
+if not os.path.exists(os.path.join(source, "LICENSE")):
+    files.append(license_path)
 
 # --- write a reproducible zip ----------------------------------------------
+def arc_rel(path):
+    if path == license_path:
+        return "LICENSE"
+    return os.path.relpath(path, source).replace(os.sep, "/")
+
 FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 tmp = output + ".tmp"
 with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as z:
     for path in files:
-        arc = os.path.join(skill_name, os.path.relpath(path, source)).replace(os.sep, "/")
+        arc = f"{skill_name}/{arc_rel(path)}"
         info = zipfile.ZipInfo(arc, FIXED_TIME)
         info.compress_type = zipfile.ZIP_DEFLATED
         mode = 0o755 if path.endswith((".py", ".sh")) else 0o644
@@ -117,7 +130,7 @@ os.replace(tmp, output)
 
 print(f"Packaged {len(files)} files:")
 for path in files:
-    print("  " + os.path.join(skill_name, os.path.relpath(path, source)))
+    print(f"  {skill_name}/{arc_rel(path)}")
 PY
 
 SIZE=$(du -h "$OUTPUT" | cut -f1)

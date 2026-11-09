@@ -1,6 +1,9 @@
 ---
 name: plan-sourdough-bake
 description: Turns a sourdough (or any bread) recipe into a timed baking schedule with a clock time for every step (levain, mixing, bulk, shaping, proof, cold retard, bake), working backwards from a target bake or finish time. When no time is given, picks a finish time so all hands-on steps fall outside working hours and sleep, using evenings, early mornings and weekends, and adjusts flexible proofs within their safe ranges. Use whenever someone shares a bread recipe and asks when to start, wants bread ready at a certain time, asks for a baking plan, timeline or schedule, or wants to fit a bake around work or sleep, e.g. "when do I have to start to have this loaf by Saturday breakfast?" or "Backplan für dieses Rezept". Can export the plan as a printable one-page PDF.
+license: Apache-2.0
+metadata:
+  author: Sebastian Böhm
 ---
 
 # Plan a sourdough bake

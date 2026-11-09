@@ -100,6 +100,7 @@ fi
 mkdir -p "$TARGET_DIR"
 if [[ $MODE == "copy" ]]; then
   cp -R "$SOURCE" "$DEST"
+  cp "$SCRIPT_DIR/LICENSE" "$DEST/LICENSE"
   find "$DEST" -name __pycache__ -type d -prune -exec rm -rf {} +
   echo "Copied $SKILL_NAME to $DEST"
 else
