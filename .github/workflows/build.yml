@@ -28,7 +28,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Check Python 3.9 syntax
-        run: python3 -c "import ast; ast.parse(open('plan-sourdough-bake/scripts/schedule.py').read(), feature_version=(3,9))"
+        run: |
+          for f in plan-sourdough-bake/scripts/*.py; do
+            python3 -c "import ast, sys; ast.parse(open(sys.argv[1]).read(), feature_version=(3,9))" "$f"
+          done
+      # the PDF export's rendering tests need reportlab (and Pillow for PNG images)
+      - name: Install PDF dependencies
+        run: python3 -m pip install reportlab pillow
       - name: Run unit tests
         run: python3 -m unittest discover -v tests
 

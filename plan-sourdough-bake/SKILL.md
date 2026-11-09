@@ -1,6 +1,6 @@
 ---
 name: plan-sourdough-bake
-description: Turns a sourdough (or any bread) recipe into a timed baking schedule with a clock time for every step (levain, mixing, bulk, shaping, proof, cold retard, bake), working backwards from a target bake or finish time. When no time is given, picks a finish time so all hands-on steps fall outside working hours and sleep, using evenings, early mornings and weekends, and adjusts flexible proofs within their safe ranges. Use whenever someone shares a bread recipe and asks when to start, wants bread ready at a certain time, asks for a baking plan, timeline or schedule, or wants to fit a bake around work or sleep, e.g. "when do I have to start to have this loaf by Saturday breakfast?" or "Backplan für dieses Rezept". Can export the plan as a calendar (.ics) file.
+description: Turns a sourdough (or any bread) recipe into a timed baking schedule with a clock time for every step (levain, mixing, bulk, shaping, proof, cold retard, bake), working backwards from a target bake or finish time. When no time is given, picks a finish time so all hands-on steps fall outside working hours and sleep, using evenings, early mornings and weekends, and adjusts flexible proofs within their safe ranges. Use whenever someone shares a bread recipe and asks when to start, wants bread ready at a certain time, asks for a baking plan, timeline or schedule, or wants to fit a bake around work or sleep, e.g. "when do I have to start to have this loaf by Saturday breakfast?" or "Backplan für dieses Rezept". Can export the plan as a calendar (.ics) file or a printable one-page PDF.
 ---
 
 # Plan a sourdough bake
@@ -90,7 +90,28 @@ Keep it scannable. Leave out the raw JSON and how the script was run, unless the
 ### 6. Offer follow-ups
 
 - **Calendar:** re-run with `--ics <file>` (it writes the first option, with one event per step plus a preheat reminder and alarms at each step), then give the user the file.
+- **PDF**, when the user asks for one ("as a PDF", "to print"): see [PDF export](#pdf-export) below.
 - **Reschedule:** a different finish time, different availability, or a nudged step. Re-run the script; don't edit times by hand.
+
+## PDF export
+
+A one-page A4 handout with only the recipe and the plan: title, subtitle, an optional photo, the ingredients, and one section per day with a clock time for every step, an "Oven on" row at the preheat moment and a final "Done" row. No notes, assumptions, conflicts or adjustments go into the PDF; keep those in your chat answer.
+
+1. Save the scheduler's JSON output (step 4) to a file, for example `plan.json`. Use the same recipe JSON.
+2. Run:
+   ```bash
+   python3 scripts/make_pdf.py recipe.json plan.json -o plan.pdf --lang de --subtitle "Backplan für 10 Semmeln"
+   ```
+   - `--lang en|de` sets the labels ("Day before" / "Bake day", "Vortag" / "Backtag", "Oven on", "Done" …). For any other language, keep `--lang en` and override every label with `--label KEY=TEXT` (the keys are listed in `--help`).
+   - `--subtitle` is a short line such as "Baking plan for 10 rolls", in the user's language. When the recipe JSON has `source.url`, the script appends "· Recipe: <domain>" with the domain linked to the source.
+   - Days are headed "Day before" / "Bake day" by default. Add `--dates` only when the user wants actual dates.
+   - `--option N` renders another option from a `--top` run (default 0).
+   - `--image PATH_OR_URL` puts a recipe photo under the subtitle, but only when the user wants one. If the output says `"image": "failed: …"`, the PDF was built without it: tell the user and ask them to upload the photo, then re-run with the uploaded file.
+3. The script prints `{"pages", "font", "image", "pdf"}`. It needs `reportlab` (`pip install reportlab` if the import fails). It looks for DejaVu Sans and falls back to reportlab's bundled Vera font.
+4. **Check before handing it over:** render the page with `pdftoppm -png -r 80 plan.pdf preview` and look at the image. Times should line up under the headings, nothing should run past the margins, and steps shouldn't break oddly. The script already shrinks the image and the spacing to fit one page; if `pages` is still above 1, offer to leave out the photo or shorten long step descriptions in the recipe JSON.
+5. Give the user the PDF file.
+
+Write step texts without emoji; the font has no glyphs for them (the script removes any it finds).
 
 ## Rules
 

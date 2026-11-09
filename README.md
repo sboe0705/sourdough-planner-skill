@@ -33,6 +33,7 @@ Other things you can ask:
 - "Plan it around my shifts: I work 14:00–22:00 on weekdays."
 - "Start tonight at 19:00. When will it be done?"
 - "Put the plan in my calendar." (exports an `.ics` file)
+- "Give me the plan as a PDF to print." (a one-page A4 handout: ingredients, then each day's steps with clock times, headed "Day before" / "Bake day")
 
 ## Install
 
@@ -62,7 +63,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 
 `build.sh` checks the `SKILL.md` frontmatter (name and description limits), runs the unit tests, and writes a reproducible zip with the skill folder at its root and without caches. Options: `--output FILE` for another destination, `--skip-tests` to package without testing.
 
-**Other agents** that support the Agent Skills format: point them at the folder. The skill needs Python 3.9+ for the scheduler, with no third-party packages. If an agent can't run code, it falls back to the documented manual procedure.
+**Other agents** that support the Agent Skills format: point them at the folder. The skill needs Python 3.9+ for the scheduler, with no third-party packages. Only the optional PDF export needs [reportlab](https://pypi.org/project/reportlab/) (`pip install reportlab`, plus Pillow for PNG photos); it uses DejaVu Sans when installed and reportlab's bundled Vera font otherwise. If an agent can't run code, it falls back to the documented manual procedure.
 
 ## What's inside
 
@@ -70,6 +71,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 |---|---|
 | `plan-sourdough-bake/SKILL.md` | The workflow the agent follows |
 | `plan-sourdough-bake/scripts/schedule.py` | Scheduling engine and CLI (backward pass, busy-window search, Markdown / JSON / iCalendar output) |
+| `plan-sourdough-bake/scripts/make_pdf.py` | Renders a schedule (the scheduler's JSON plus the recipe JSON) as a one-page A4 PDF (needs reportlab) |
 | `plan-sourdough-bake/references/recipe-format.md` | Recipe JSON format and rules for converting recipes |
 | `plan-sourdough-bake/references/manual-scheduling.md` | The same algorithm by hand, for agents without code execution |
 | `plan-sourdough-bake/examples/country-loaf.json` | A complete example recipe |
@@ -78,7 +80,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | `.github/workflows/build.yml` | CI: tests on Python 3.9 and current 3.x, then uploads the zip as a workflow artifact, unwrapped (no zip-in-zip), so it can be uploaded to an agent as downloaded |
 | `.github/workflows/release.yml` | Publishes a GitHub release with the zip when a `v*` tag is pushed |
 | `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
-| `tests/` | Unit tests for the engine |
+| `tests/` | Unit tests for the engine and the PDF export |
 
 You can also run the engine on its own:
 
@@ -87,6 +89,11 @@ python3 plan-sourdough-bake/scripts/schedule.py plan-sourdough-bake/examples/cou
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 --ics bake.ics
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-05:00" --top 3
 python3 plan-sourdough-bake/scripts/schedule.py --help
+
+# PDF export (needs reportlab)
+python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 > plan.json
+python3 plan-sourdough-bake/scripts/make_pdf.py recipe.json plan.json -o plan.pdf --lang de --subtitle "Backplan für 10 Semmeln"
+python3 plan-sourdough-bake/scripts/make_pdf.py recipe.json plan.json -o plan.pdf --dates --image photo.jpg
 ```
 
 ## How the schedule is chosen
@@ -104,6 +111,8 @@ python3 plan-sourdough-bake/scripts/schedule.py --help
 ```bash
 python3 -m unittest discover tests
 ```
+
+The PDF rendering tests are skipped when reportlab isn't installed.
 
 [`CLAUDE.md`](CLAUDE.md) holds the development guide: architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `CLAUDE.md` up to date with every change.
 

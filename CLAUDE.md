@@ -8,7 +8,7 @@ The skill is meant for public use, in Claude Code, Claude.ai/Desktop and other a
 
 **Origin:** the scheduling model and the recipe data model come from the Schedoughler app (`/home/sboe0705/Projekte/schedoughler`, https://github.com/sboe0705/schedoughler). Its `src/scheduler.js` (`computeSchedule`, `effectiveDuration`), `check-critical-times.sh` and the `add-recipe` / `tune-ideal-finish` skills are the reference. `schedule.py` is a port of that logic with extensions (see **Scheduling rules**).
 
-**Tech stack:** Python 3 **standard library only** (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh` and `build.sh`. No dependencies; the only "build" is zipping the skill folder.
+**Tech stack:** Python 3 **standard library only** for the scheduler (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh` and `build.sh`. The one exception is the optional PDF export `make_pdf.py`, which needs **reportlab** (Pillow for non-JPEG images). The only "build" is zipping the skill folder.
 
 ## Commands
 
@@ -20,6 +20,11 @@ python3 plan-sourdough-bake/scripts/schedule.py plan-sourdough-bake/examples/cou
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --now 2026-11-09T07:00 --top 3
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 --ics bake.ics
 python3 plan-sourdough-bake/scripts/schedule.py --help
+
+# PDF export (needs reportlab; locally e.g. in a venv: python3 -m venv .venv && .venv/bin/pip install reportlab pillow)
+python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 > plan.json
+python3 plan-sourdough-bake/scripts/make_pdf.py recipe.json plan.json -o plan.pdf --lang de --subtitle "Backplan für 10 Semmeln"
+pdftoppm -png -r 80 plan.pdf preview     # look at the page before shipping layout changes
 
 ./install.sh                 # symlink the skill into ~/.claude/skills (--project, --target, --copy, --force, --uninstall)
 ./build.sh                   # check frontmatter, run tests, write dist/plan-sourdough-bake.zip (--output, --skip-tests)
@@ -33,13 +38,15 @@ The skill is installed on this machine via `install.sh`: `~/.claude/skills/plan-
 plan-sourdough-bake/              # ← the skill itself; everything the agent sees lives here
 ├── SKILL.md                      # frontmatter (name, description) + the agent's workflow
 ├── scripts/schedule.py           # scheduling engine + CLI (JSON / Markdown / iCalendar output)
+├── scripts/make_pdf.py           # one-page A4 PDF from schedule.py's JSON + the recipe JSON (reportlab)
 ├── references/recipe-format.md   # recipe JSON schema, conversion rules, range-inference table
 ├── references/manual-scheduling.md  # the same algorithm by hand, for agents without code execution
 └── examples/country-loaf.json    # self-written example recipe
 tests/test_schedule.py            # unittest suite for schedule.py (incl. CLI via subprocess)
+tests/test_make_pdf.py            # unittest suite for make_pdf.py (rendering tests skip without reportlab)
 install.sh                        # symlinks/copies the skill into a skills directory
 build.sh                          # packages the skill as a reproducible zip in dist/ (git-ignored)
-.github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
+.github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x, with reportlab installed), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
 .github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
 README.md                         # public documentation (what it does, install, usage, how it decides)
 CLAUDE.md                         # this file
@@ -69,6 +76,14 @@ The pipeline is `main` → `run` (CLI parsing, file I/O, `--ics`) → **`plan()`
 
 Constants at the top: `KINDS`, `ATTENDED_KINDS`, `DEFAULT_BUSY`, `START_BUFFER_MIN` (20), `SLOT_MIN` (15), `MAX_COMBOS` (600).
 
+## Architecture of `make_pdf.py`
+
+- **`build_model`** turns the recipe JSON and one option of `schedule.py`'s JSON into a plain dict (title, subtitle, source link, ingredients, days → rows of time / "Step · Duration" / instruction). No reportlab here, so it is tested everywhere. Days are grouped by calendar date and headed relative to the finish day ("Day before", "Bake day", "{n} days before") unless `--dates`. It adds an "Oven on" row at `preheat_at` and a "Done" row at the finish. Ingredients without an amount (intermediate products like levain) are left out. Emoji are stripped.
+- **Labels** come from the `LABELS` presets (`en`, `de`) plus `--label KEY=TEXT` overrides; this is how the PDF is localised, since the agent can't edit it afterwards.
+- **`render_pdf`** loads the image (path or URL; any failure → build without it and report `"image": "failed: …"`), then calls `_build` until the PDF fits one page: shrink the image from 85 mm down to `IMAGE_MIN_HEIGHT_MM`, then a compact spacing pass.
+- **Layout** (keep it): A4, margins 20 mm left/right and 18 mm top/bottom, table width = text width − 12 pt frame padding (so times sit flush under the headings, zero cell padding on the left), title 22 pt bold, subtitle 10 pt `#666666`, headings 13 pt bold in accent `#8a5a2b` (also the link colour), ingredients in two columns (amount bold in a narrow column + name), steps as time (18 mm, bold) + "Step · Duration" bold over the instruction at 9.5 pt `#333333`, about 9 pt between steps, no borders, lines or backgrounds. One `Table` per step, so a step never splits across pages; each day heading is kept with its first step.
+- **Fonts:** DejaVu Sans / Sans-Bold from the usual system font directories (or `--font-dir`, or matplotlib's copy), else reportlab's bundled Vera, else Helvetica.
+
 ## Scheduling rules (keep code, docs and tests consistent)
 
 - **Moments that need the baker** (`find_conflicts`):
@@ -88,13 +103,15 @@ These rules are described in four places: `schedule.py`, `references/manual-sche
 
 ## Conventions
 
-- **Standard library only** in `schedule.py`, and stay compatible with Python 3.9. Check with `python3 -c "import ast; ast.parse(open('plan-sourdough-bake/scripts/schedule.py').read(), feature_version=(3,9))"`. Use `X | None` only in annotations (the file has `from __future__ import annotations`).
+- **Standard library only** in `schedule.py`, and stay compatible with Python 3.9. Check with `python3 -c "import ast; ast.parse(open('plan-sourdough-bake/scripts/schedule.py').read(), feature_version=(3,9))"` (same for `make_pdf.py`). Use `X | None` only in annotations (both files have `from __future__ import annotations`).
+- **`make_pdf.py` imports reportlab lazily**, only inside the rendering functions, so `build_model`, `--help` and the error paths work without it. Don't add other third-party packages.
 - **Skill text is English.** The agent answers in the user's language, and recipe content stays in the recipe's language. Script output (labels, weekday abbreviations) is English, and the agent localises it.
 - **`SKILL.md` frontmatter:**
   - `name` must stay `plan-sourdough-bake`: lowercase and hyphens, ≤ 64 characters, matching the folder name.
   - `description` is the trigger text, ≤ 1024 characters.
   - Keep the body of `SKILL.md` lean and put detail in `references/`.
-- **Changing the JSON output** (field names in `option_json`) changes the skill's contract. Update `SKILL.md` step 4/5, and add fields rather than renaming them.
+- **Changing the JSON output** (field names in `option_json`) changes the skill's contract. Update `SKILL.md` step 4/5, and add fields rather than renaming them. `make_pdf.py` reads `finish`, and per step `title`, `start`, `duration`, `desc`, `ingredients` and `preheat_at`.
+- **The PDF holds only the recipe and the plan.** No notes, assumptions, conflicts or adjustments, and no emoji (the fonts have no glyphs). After layout changes, render it with `pdftoppm` and look at it.
 - **Changing the recipe format** means updating `references/recipe-format.md`, `examples/country-loaf.json` and `validate_recipe` together.
 - **No third-party recipe texts** in the repo (copyright, since the repo is public). Examples must be self-written.
 - **Tests:**
