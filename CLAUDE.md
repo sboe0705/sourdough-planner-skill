@@ -50,6 +50,7 @@ build.sh                          # packages the skill as a reproducible zip in 
 release.sh                        # tags a release: shows the latest tag and commits since, suggests the next version, pushes
 .github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x, with reportlab installed), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
 .github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
+.github/FUNDING.yml               # Buy Me a Coffee link for GitHub's sponsor button (also linked in the README's "Support" section)
 README.md                         # public documentation (what it does, install, usage, how it decides)
 CLAUDE.md                         # this file
 LICENSE                           # Apache-2.0

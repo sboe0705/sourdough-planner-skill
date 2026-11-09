@@ -116,6 +116,10 @@ The PDF rendering tests are skipped when reportlab isn't installed.
 
 [`CLAUDE.md`](CLAUDE.md) holds the development guide: architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `CLAUDE.md` up to date with every change.
 
+## Support
+
+If this skill is useful to you, you can support its development with a coffee: [buymeacoffee.com/sboe0705](https://buymeacoffee.com/sboe0705) ☕
+
 ## License
 
 [Apache 2.0](LICENSE)
