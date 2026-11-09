@@ -305,18 +305,6 @@ class CliTest(unittest.TestCase):
         self.assertIn("| When | Step |", p.stdout)
         self.assertIn("Bread is done", p.stdout)
 
-    def test_ics_output(self):
-        import tempfile
-        with tempfile.TemporaryDirectory() as d:
-            out = Path(d) / "bake.ics"
-            p = self.run_cli("--finish", "2026-11-15T10:00", "--ics", str(out))
-            self.assertEqual(p.returncode, 0, p.stderr)
-            text = out.read_bytes().decode("utf-8")
-            self.assertTrue(text.startswith("BEGIN:VCALENDAR"))
-            self.assertEqual(text.count("BEGIN:VEVENT"), 10)  # 9 steps + preheat
-            for line in text.split("\r\n"):
-                self.assertLessEqual(len(line.encode("utf-8")), 75)
-
     def test_error_exit_code(self):
         p = self.run_cli("--busy", "nonsense")
         self.assertEqual(p.returncode, 2)

@@ -25,7 +25,7 @@ import itertools
 import json
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 KINDS = ("prep", "rise", "cold", "bake")
 ATTENDED_KINDS = ("prep", "bake")  # the baker must be present for the whole step
@@ -500,68 +500,6 @@ def to_markdown(result: dict) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def _ics_escape(text: str) -> str:
-    return (text.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,")
-            .replace("\r\n", "\\n").replace("\n", "\\n"))
-
-
-def _ics_fold(line: str) -> str:
-    out, cur = [], b""
-    for ch in line:
-        enc = ch.encode("utf-8")
-        if len(cur) + len(enc) > (75 if not out else 74):
-            out.append(cur.decode("utf-8"))
-            cur = b""
-        cur += enc
-    out.append(cur.decode("utf-8"))
-    return "\r\n ".join(out)
-
-
-def to_ics(result: dict, option_index: int = 0) -> str:
-    opt = result["options"][option_index]
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    uid_base = re.sub(r"[^A-Za-z0-9]+", "-", result["recipe"]).strip("-").lower() or "bake"
-    ics_t = lambda s: s.replace("-", "").replace(":", "") + "00"  # floating local time
-    lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//plan-sourdough-bake//EN", "CALSCALE:GREGORIAN"]
-    for s in opt["steps"]:
-        if s.get("preheat_at"):
-            lines += [
-                "BEGIN:VEVENT",
-                f"UID:{uid_base}-{opt['start'].replace(':', '')}-{s['index']}-preheat@plan-sourdough-bake",
-                f"DTSTAMP:{stamp}",
-                f"DTSTART:{ics_t(s['preheat_at'])}",
-                f"DTEND:{ics_t(s['start'])}",
-                f"SUMMARY:{_ics_escape(result['recipe'] + ': preheat the oven')}",
-                "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:PT0M",
-                "DESCRIPTION:Preheat the oven", "END:VALARM",
-                "END:VEVENT",
-            ]
-        desc = s.get("desc", "")
-        if s.get("ingredients"):
-            parts = []
-            for ing in s["ingredients"]:
-                amount = " ".join(str(x) for x in (ing.get("amount"), ing.get("unit")) if x is not None)
-                name = ing.get("name", "")
-                note = f" ({ing['note']})" if ing.get("note") else ""
-                parts.append(f"- {amount + ' ' if amount else '+ '}{name}{note}")
-            desc = (desc + "\n\n" if desc else "") + "\n".join(parts)
-        lines += [
-            "BEGIN:VEVENT",
-            f"UID:{uid_base}-{opt['start'].replace(':', '')}-{s['index']}@plan-sourdough-bake",
-            f"DTSTAMP:{stamp}",
-            f"DTSTART:{ics_t(s['start'])}",
-            f"DTEND:{ics_t(s['end'])}",
-            f"SUMMARY:{_ics_escape(result['recipe'] + ': ' + s['title'])}",
-            f"DESCRIPTION:{_ics_escape(desc)}",
-            # reminder when the step is due
-            "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:PT0M",
-            f"DESCRIPTION:{_ics_escape(s['title'])}", "END:VALARM",
-            "END:VEVENT",
-        ]
-    lines.append("END:VCALENDAR")
-    return "\r\n".join(_ics_fold(l) for l in lines) + "\r\n"
-
-
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -609,7 +547,6 @@ def build_parser():
     p.add_argument("--starts-only", action="store_true",
                    help="only check step starts (Schedoughler's rule), not finish or hands-on overlap")
     p.add_argument("--format", choices=("json", "markdown"), default="json")
-    p.add_argument("--ics", metavar="FILE", help="also write the first option as an iCalendar file")
     return p
 
 
@@ -686,10 +623,6 @@ def run(argv=None) -> tuple[dict, str]:
         days=args.days, top=args.top, keep_durations=args.keep_durations,
         overrides=parse_overrides(args.overrides, recipe) if args.overrides else None,
         starts_only=args.starts_only)
-    if args.ics:
-        with open(args.ics, "w", encoding="utf-8", newline="") as f:
-            f.write(to_ics(result))
-        result["ics_file"] = args.ics
     return result, args.format
 
 

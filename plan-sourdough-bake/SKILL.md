@@ -1,6 +1,6 @@
 ---
 name: plan-sourdough-bake
-description: Turns a sourdough (or any bread) recipe into a timed baking schedule with a clock time for every step (levain, mixing, bulk, shaping, proof, cold retard, bake), working backwards from a target bake or finish time. When no time is given, picks a finish time so all hands-on steps fall outside working hours and sleep, using evenings, early mornings and weekends, and adjusts flexible proofs within their safe ranges. Use whenever someone shares a bread recipe and asks when to start, wants bread ready at a certain time, asks for a baking plan, timeline or schedule, or wants to fit a bake around work or sleep, e.g. "when do I have to start to have this loaf by Saturday breakfast?" or "Backplan für dieses Rezept". Can export the plan as a calendar (.ics) file or a printable one-page PDF.
+description: Turns a sourdough (or any bread) recipe into a timed baking schedule with a clock time for every step (levain, mixing, bulk, shaping, proof, cold retard, bake), working backwards from a target bake or finish time. When no time is given, picks a finish time so all hands-on steps fall outside working hours and sleep, using evenings, early mornings and weekends, and adjusts flexible proofs within their safe ranges. Use whenever someone shares a bread recipe and asks when to start, wants bread ready at a certain time, asks for a baking plan, timeline or schedule, or wants to fit a bake around work or sleep, e.g. "when do I have to start to have this loaf by Saturday breakfast?" or "Backplan für dieses Rezept". Can export the plan as a printable one-page PDF.
 ---
 
 # Plan a sourdough bake
@@ -68,7 +68,6 @@ Other options:
 - `--keep-durations` never changes flexible steps (use it when the user wants the recipe's exact times)
 - `--overrides '3=300'` pins a step's duration in minutes (0-based step index)
 - `--format markdown` gives a quick human view
-- `--ics bake.ics` writes a calendar file (see step 6)
 
 The JSON output has `options[]`. Each option has `start`, `finish`, `total`, `conflict_count`, `adjusted_steps`, and `steps[]` with `start`, `end`, `duration`, `attended`, `overnight`, `conflict`, `preheat_at`, `desc` and `ingredients`. Treat these times as authoritative. Don't recompute them in your head.
 
@@ -89,7 +88,6 @@ Keep it scannable. Leave out the raw JSON and how the script was run, unless the
 
 ### 6. Offer follow-ups
 
-- **Calendar:** re-run with `--ics <file>` (it writes the first option, with one event per step plus a preheat reminder and alarms at each step), then give the user the file.
 - **PDF**, when the user asks for one ("as a PDF", "to print"): see [PDF export](#pdf-export) below.
 - **Reschedule:** a different finish time, different availability, or a nudged step. Re-run the script; don't edit times by hand.
 

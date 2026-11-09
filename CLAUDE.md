@@ -18,7 +18,7 @@ python3 -m unittest discover tests        # run the unit tests (from the repo ro
 # run the engine directly
 python3 plan-sourdough-bake/scripts/schedule.py plan-sourdough-bake/examples/country-loaf.json --format markdown
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --now 2026-11-09T07:00 --top 3
-python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 --ics bake.ics
+python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00
 python3 plan-sourdough-bake/scripts/schedule.py --help
 
 # PDF export (needs reportlab; locally e.g. in a venv: python3 -m venv .venv && .venv/bin/pip install reportlab pillow)
@@ -37,7 +37,7 @@ The skill is installed on this machine via `install.sh`: `~/.claude/skills/plan-
 ```
 plan-sourdough-bake/              # ← the skill itself; everything the agent sees lives here
 ├── SKILL.md                      # frontmatter (name, description) + the agent's workflow
-├── scripts/schedule.py           # scheduling engine + CLI (JSON / Markdown / iCalendar output)
+├── scripts/schedule.py           # scheduling engine + CLI (JSON / Markdown output)
 ├── scripts/make_pdf.py           # one-page A4 PDF from schedule.py's JSON + the recipe JSON (reportlab)
 ├── references/recipe-format.md   # recipe JSON schema, conversion rules, range-inference table
 ├── references/manual-scheduling.md  # the same algorithm by hand, for agents without code execution
@@ -55,7 +55,7 @@ LICENSE                           # Apache-2.0
 
 ## Architecture of `schedule.py`
 
-The pipeline is `main` → `run` (CLI parsing, file I/O, `--ics`) → **`plan()`**, the public, testable entry point that returns the result dict.
+The pipeline is `main` → `run` (CLI parsing, file I/O) → **`plan()`**, the public, testable entry point that returns the result dict.
 
 - **Recipe:**
   - `validate_recipe` normalises durations to ints, rejects broken recipes with `RecipeError`, and returns warnings. A range on a `bake` step is dropped with a warning.
@@ -72,7 +72,7 @@ The pipeline is `main` → `run` (CLI parsing, file I/O, `--ics`) → **`plan()`
   - `flexible_combos` lists duration choices on each step's own `step` grid, coarsened until there are at most `MAX_COMBOS`, and sorted by deviation.
   - `best_for_finish` picks the best combo for a fixed finish. It stops early once a conflict-free combo is found, because nothing later can beat it.
   - `search` scans finish times on a `SLOT_MIN` grid and keeps one option per finish day.
-- **Output:** `option_json` is the JSON contract the skill relies on. `to_markdown` and `to_ics` render from that JSON, not from internal objects.
+- **Output:** `option_json` is the JSON contract the skill relies on. `to_markdown` renders from that JSON, not from internal objects.
 
 Constants at the top: `KINDS`, `ATTENDED_KINDS`, `DEFAULT_BUSY`, `START_BUFFER_MIN` (20), `SLOT_MIN` (15), `MAX_COMBOS` (600).
 

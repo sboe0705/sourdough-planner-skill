@@ -32,7 +32,6 @@ Other things you can ask:
 - "I want this bread for Saturday breakfast."
 - "Plan it around my shifts: I work 14:00–22:00 on weekdays."
 - "Start tonight at 19:00. When will it be done?"
-- "Put the plan in my calendar." (exports an `.ics` file)
 - "Give me the plan as a PDF to print." (a one-page A4 handout: ingredients, then each day's steps with clock times, headed "Day before" / "Bake day")
 
 ## Install
@@ -70,7 +69,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | Path | Purpose |
 |---|---|
 | `plan-sourdough-bake/SKILL.md` | The workflow the agent follows |
-| `plan-sourdough-bake/scripts/schedule.py` | Scheduling engine and CLI (backward pass, busy-window search, Markdown / JSON / iCalendar output) |
+| `plan-sourdough-bake/scripts/schedule.py` | Scheduling engine and CLI (backward pass, busy-window search, Markdown / JSON output) |
 | `plan-sourdough-bake/scripts/make_pdf.py` | Renders a schedule (the scheduler's JSON plus the recipe JSON) as a one-page A4 PDF (needs reportlab) |
 | `plan-sourdough-bake/references/recipe-format.md` | Recipe JSON format and rules for converting recipes |
 | `plan-sourdough-bake/references/manual-scheduling.md` | The same algorithm by hand, for agents without code execution |
@@ -86,7 +85,7 @@ You can also run the engine on its own:
 
 ```bash
 python3 plan-sourdough-bake/scripts/schedule.py plan-sourdough-bake/examples/country-loaf.json --format markdown
-python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 --ics bake.ics
+python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-05:00" --top 3
 python3 plan-sourdough-bake/scripts/schedule.py --help
 
