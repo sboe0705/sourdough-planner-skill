@@ -80,7 +80,8 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | `build.sh` | Packages the skill as `dist/plan-sourdough-bake.zip` for upload to Claude.ai and other agents |
 | `.github/workflows/build.yml` | CI: tests on Python 3.9 and current 3.x, then uploads the zip as a workflow artifact, unwrapped (no zip-in-zip), so it can be uploaded to an agent as downloaded |
 | `.github/workflows/release.yml` | Publishes a GitHub release with the zip when a `v*` tag is pushed |
-| `CLAUDE.md` | Development guide for AI agents (and humans) working on this repo |
+| `AGENTS.md` | Development guide for AI agents (and humans) working on this repo |
+| `CLAUDE.md` | Imports `AGENTS.md` for Claude Code |
 | `tests/` | Unit tests for the engine and the PDF export |
 
 You can also run the engine on its own:
@@ -115,7 +116,7 @@ python3 -m unittest discover tests
 
 The PDF rendering tests are skipped when reportlab isn't installed.
 
-[`CLAUDE.md`](CLAUDE.md) holds the development guide: architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `CLAUDE.md` up to date with every change.
+[`AGENTS.md`](AGENTS.md) holds the development guide (`CLAUDE.md` just imports it for Claude Code): architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `AGENTS.md` up to date with every change.
 
 ## Support
 
