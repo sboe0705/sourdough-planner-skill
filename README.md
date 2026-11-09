@@ -62,7 +62,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 
 `build.sh` checks the `SKILL.md` frontmatter (name and description limits), runs the unit tests, and writes a reproducible zip with the skill folder at its root and without caches. Options: `--output FILE` for another destination, `--skip-tests` to package without testing.
 
-**Other agents** that support the Agent Skills format: point them at the folder. The skill needs Python 3.9+ for the scheduler, with no third-party packages. Only the optional PDF export needs [reportlab](https://pypi.org/project/reportlab/) (`pip install reportlab`, plus Pillow for PNG photos); it uses DejaVu Sans when installed and reportlab's bundled Vera font otherwise. If an agent can't run code, it falls back to the documented manual procedure.
+**Other agents** that support the Agent Skills format: point them at the folder. The skill needs Python 3.9+ for the scheduler, with no third-party packages. Only the optional PDF export needs [reportlab](https://pypi.org/project/reportlab/) (`pip install reportlab`, on Python 3.9 `pip install 'reportlab<5'`, plus Pillow for PNG photos); it uses DejaVu Sans when installed and reportlab's bundled Vera font otherwise. If an agent can't run code, it falls back to the documented manual procedure.
 
 ## What's inside
 

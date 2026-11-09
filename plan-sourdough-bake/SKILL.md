@@ -105,7 +105,7 @@ A one-page A4 handout with only the recipe and the plan: title, subtitle, an opt
    - Days are headed "Day before" / "Bake day" by default. Add `--dates` only when the user wants actual dates.
    - `--option N` renders another option from a `--top` run (default 0).
    - `--image PATH_OR_URL` puts a recipe photo under the subtitle, but only when the user wants one. If the output says `"image": "failed: …"`, the PDF was built without it: tell the user and ask them to upload the photo, then re-run with the uploaded file.
-3. The script prints `{"pages", "font", "image", "pdf"}`. It needs `reportlab` (`pip install reportlab` if the import fails). It looks for DejaVu Sans and falls back to reportlab's bundled Vera font.
+3. The script prints `{"pages", "font", "image", "pdf"}`. It needs `reportlab` (`pip install reportlab` if the import fails; on Python 3.9 `pip install 'reportlab<5'`). It looks for DejaVu Sans and falls back to reportlab's bundled Vera font.
 4. **Check before handing it over:** render the page with `pdftoppm -png -r 80 plan.pdf preview` and look at the image. Times should line up under the headings, nothing should run past the margins, and steps shouldn't break oddly. The script already shrinks the image and the spacing to fit one page; if `pages` is still above 1, offer to leave out the photo or shorten long step descriptions in the recipe JSON.
 5. Give the user the PDF file.
 

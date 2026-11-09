@@ -32,9 +32,12 @@ jobs:
           for f in plan-sourdough-bake/scripts/*.py; do
             python3 -c "import ast, sys; ast.parse(open(sys.argv[1]).read(), feature_version=(3,9))" "$f"
           done
-      # the PDF export's rendering tests need reportlab (and Pillow for PNG images)
+      # the PDF export's rendering tests need reportlab (and Pillow for PNG images);
+      # reportlab 5 installs on Python 3.9 but refuses to import there, so 3.9 gets 4.x
       - name: Install PDF dependencies
-        run: python3 -m pip install reportlab pillow
+        run: |
+          python3 -m pip install "reportlab<5; python_version<'3.10'" "reportlab; python_version>='3.10'" pillow
+          python3 -I -c "import reportlab; print('reportlab', reportlab.Version)"
       - name: Run unit tests
         run: python3 -m unittest discover -v tests
 

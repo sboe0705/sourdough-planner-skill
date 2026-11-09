@@ -8,7 +8,7 @@ The skill is meant for public use, in Claude Code, Claude.ai/Desktop and other a
 
 **Origin:** the scheduling model and the recipe data model come from the Schedoughler app (`/home/sboe0705/Projekte/schedoughler`, https://github.com/sboe0705/schedoughler). Its `src/scheduler.js` (`computeSchedule`, `effectiveDuration`), `check-critical-times.sh` and the `add-recipe` / `tune-ideal-finish` skills are the reference. `schedule.py` is a port of that logic with extensions (see **Scheduling rules**).
 
-**Tech stack:** Python 3 **standard library only** for the scheduler (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh` and `build.sh`. The one exception is the optional PDF export `make_pdf.py`, which needs **reportlab** (Pillow for non-JPEG images). The only "build" is zipping the skill folder.
+**Tech stack:** Python 3 **standard library only** for the scheduler (Python 3.9+ syntax), Markdown for the skill docs, Bash for `install.sh` and `build.sh`. The one exception is the optional PDF export `make_pdf.py`, which needs **reportlab** (Pillow for non-JPEG images). reportlab 5 needs Python 3.10+ although pip installs it on 3.9, so 3.9 needs `reportlab<5`; CI installs it that way and checks the import. The only "build" is zipping the skill folder.
 
 ## Commands
 

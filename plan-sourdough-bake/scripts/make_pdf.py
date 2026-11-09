@@ -468,8 +468,11 @@ def main(argv=None) -> int:
         return 2
     try:
         import reportlab  # noqa: F401
-    except ImportError:
-        print("error: reportlab is not installed (pip install reportlab)", file=sys.stderr)
+    except ImportError as exc:
+        # reportlab 5 installs on Python 3.9 but refuses to import there
+        hint = "'reportlab<5'" if sys.version_info < (3, 10) else "reportlab"
+        print(f"error: cannot import reportlab ({exc}); install it with: pip install {hint}",
+              file=sys.stderr)
         return 3
     result = render_pdf(model, args.output, args.image, args.font_dir)
     result["pdf"] = args.output

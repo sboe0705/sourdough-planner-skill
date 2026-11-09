@@ -7,7 +7,6 @@ Run from the repository root:  python3 -m unittest discover tests
 """
 
 import copy
-import importlib.util
 import json
 import subprocess
 import sys
@@ -25,7 +24,12 @@ sys.path.insert(0, str(SCRIPTS))
 import make_pdf as P  # noqa: E402
 import schedule as S  # noqa: E402
 
-HAS_REPORTLAB = importlib.util.find_spec("reportlab") is not None
+# Import it for real: reportlab 5 installs on Python 3.9 but refuses to import there.
+try:
+    import reportlab  # noqa: F401
+    HAS_REPORTLAB = True
+except ImportError:
+    HAS_REPORTLAB = False
 FINISH = datetime(2026, 11, 14, 10, 0)  # a Saturday
 NOW = datetime(2026, 11, 9, 7, 0)
 
