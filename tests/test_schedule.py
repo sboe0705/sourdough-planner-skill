@@ -150,6 +150,15 @@ class BusyWindowTest(unittest.TestCase):
         self.assertEqual(S.BusyWindow("Fri-Mon 10:00-12:00").days, {4, 5, 6, 0})
         self.assertEqual(S.BusyWindow("Montag 10:00-12:00").days, {0})
 
+    def test_default_windows(self):
+        self.assertEqual(S.DEFAULT_BUSY, ("Mon-Fri 08:00-16:00", "daily 22:00-05:00"))
+        cal = S.BusyCalendar([S.BusyWindow(w) for w in S.DEFAULT_BUSY],
+                             datetime(2026, 11, 1), datetime(2026, 11, 30))
+        self.assertTrue(cal.at(cal.m(datetime(2026, 11, 10, 4, 59))))   # Tue, still asleep
+        self.assertFalse(cal.at(cal.m(datetime(2026, 11, 10, 5, 0))))   # Tue 05:00, up
+        self.assertTrue(cal.at(cal.m(datetime(2026, 11, 10, 8, 0))))    # Tue, work starts
+        self.assertFalse(cal.at(cal.m(datetime(2026, 11, 10, 16, 0))))  # Tue, work ends
+
     def test_overlapping_windows(self):
         cal = self.cal("09:00-17:00", "10:00-11:00")
         self.assertTrue(self.at(cal, datetime(2026, 11, 9, 12, 0)))

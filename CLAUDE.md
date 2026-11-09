@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository publishes **`plan-sourdough-bake`**, an Agent Skill that turns a bread recipe and an optional target time into a baking schedule with a clock time for every step. The schedule is computed **backwards from the moment the bread leaves the oven**. With no target time, the skill searches for a finish time whose hands-on moments fall outside busy windows, by default Mon–Fri 08:00–16:00 (work) and daily 22:00–06:00 (sleep).
+This repository publishes **`plan-sourdough-bake`**, an Agent Skill that turns a bread recipe and an optional target time into a baking schedule with a clock time for every step. The schedule is computed **backwards from the moment the bread leaves the oven**. With no target time, the skill searches for a finish time whose hands-on moments fall outside busy windows, by default Mon–Fri 08:00–16:00 (work) and daily 22:00–05:00 (sleep).
 
 The skill is meant for public use, in Claude Code, Claude.ai/Desktop and other agents that support the Agent Skills format.
 

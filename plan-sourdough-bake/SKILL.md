@@ -49,12 +49,12 @@ Write the JSON to a temporary file (for example `recipe.json` in a scratch or wo
 **Busy windows**, when the baker can't do hands-on work. The default is:
 
 - `Mon-Fri 08:00-16:00`, work
-- `daily 22:00-06:00`, sleep
+- `daily 22:00-05:00`, sleep
 
-So hands-on steps go in evenings from 16:00, early mornings from 06:00 to 08:00, and anywhere on weekends outside sleep. If the user describes a different routine, pass **all** their windows with repeated `--busy`, because `--busy` replaces the defaults. Keep the sleep window unless they say otherwise. The format is `[days] HH:MM-HH:MM`, with days like `Mon-Fri`, `Sat,Sun`, `weekends` or `daily`. A window that crosses midnight belongs to the day it starts on. Examples:
+So hands-on steps go in evenings from 16:00, early mornings from 05:00 to 08:00, and anywhere on weekends outside sleep. If the user describes a different routine, pass **all** their windows with repeated `--busy`, because `--busy` replaces the defaults. Keep the sleep window unless they say otherwise. The format is `[days] HH:MM-HH:MM`, with days like `Mon-Fri`, `Sat,Sun`, `weekends` or `daily`. A window that crosses midnight belongs to the day it starts on. Examples:
 
-- "I work 9 to 17:30" → `--busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-06:00"`
-- "I sleep in on weekends" → add `--busy "Sat,Sun 06:00-09:00"` next to the defaults
+- "I work 9 to 17:30" → `--busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-05:00"`
+- "I sleep in on weekends" → add `--busy "Sat,Sun 05:00-09:00"` next to the defaults
 - "ignore my schedule, just compute it" → `--no-busy`
 
 ### 4. Run the scheduler

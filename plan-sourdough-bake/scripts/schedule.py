@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, timezone
 
 KINDS = ("prep", "rise", "cold", "bake")
 ATTENDED_KINDS = ("prep", "bake")  # the baker must be present for the whole step
-DEFAULT_BUSY = ("Mon-Fri 08:00-16:00", "daily 22:00-06:00")
+DEFAULT_BUSY = ("Mon-Fri 08:00-16:00", "daily 22:00-05:00")
 DAY_NAMES = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 START_BUFFER_MIN = 20  # time to walk into the kitchen and start (as in Schedoughler)
 SLOT_MIN = 15  # grid for candidate finish times
@@ -175,7 +175,7 @@ class BusyWindow:
         m = _WINDOW_RE.match(text)
         if not m:
             raise ValueError(f"cannot parse busy window {text!r} "
-                             "(expected e.g. 'Mon-Fri 08:00-16:00' or 'daily 22:00-06:00')")
+                             "(expected e.g. 'Mon-Fri 08:00-16:00' or 'daily 22:00-05:00')")
         self.label = text.strip()
         self.days = _parse_days(m.group("days"))
         self.start = _parse_hhmm(m.group("s"))

@@ -4,7 +4,7 @@ Repository: `sourdough-planner-skill` · Skill: `plan-sourdough-bake` (in Claude
 
 An [Agent Skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) that turns a sourdough recipe into a baking schedule for your target bake time.
 
-Give your AI agent a recipe (pasted text, a URL or a photo) and, optionally, the time you want the bread to be done. It returns a step-by-step plan with a clock time for every step: feeding the levain, mixing, bulk fermentation, shaping, proofing, cold retard, preheating and baking. If you don't give a time, it finds one that keeps every hands-on step out of working hours (Mon–Fri 08:00–16:00) and out of the night (22:00–06:00). Long rises and fridge time run while you work or sleep, and flexible proofs are stretched or shortened within the recipe's safe range to make it fit.
+Give your AI agent a recipe (pasted text, a URL or a photo) and, optionally, the time you want the bread to be done. It returns a step-by-step plan with a clock time for every step: feeding the levain, mixing, bulk fermentation, shaping, proofing, cold retard, preheating and baking. If you don't give a time, it finds one that keeps every hands-on step out of working hours (Mon–Fri 08:00–16:00) and out of the night (22:00–05:00). Long rises and fridge time run while you work or sleep, and flexible proofs are stretched or shortened within the recipe's safe range to make it fit.
 
 The scheduling model comes from [Schedoughler](https://github.com/sboe0705/schedoughler), a bread-baking scheduler app. The bundled engine is a stdlib-only Python port of its backward scheduling, checked against the original on all 28 of its recipes.
 
@@ -85,7 +85,7 @@ You can also run the engine on its own:
 ```bash
 python3 plan-sourdough-bake/scripts/schedule.py plan-sourdough-bake/examples/country-loaf.json --format markdown
 python3 plan-sourdough-bake/scripts/schedule.py recipe.json --finish 2026-11-14T10:00 --ics bake.ics
-python3 plan-sourdough-bake/scripts/schedule.py recipe.json --busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-06:00" --top 3
+python3 plan-sourdough-bake/scripts/schedule.py recipe.json --busy "Mon-Fri 09:00-17:30" --busy "daily 22:00-05:00" --top 3
 python3 plan-sourdough-bake/scripts/schedule.py --help
 ```
 

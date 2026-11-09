@@ -18,12 +18,12 @@ Example: finish Sat 10:00, bake 45 → bake 09:15–10:00. Cold retard 720 → 2
 - the **preheat** moment, if there is one
 - the **finish**
 
-A moment is a **conflict** if it falls inside a busy window. Windows include their start minute and exclude their end minute: with work 08:00–16:00, 08:00 is busy and 16:00 is free. Default windows: Mon–Fri 08:00–16:00 (work) and every day 22:00–06:00 (sleep). A window like 22:00–06:00 that crosses midnight belongs to the day it starts on.
+A moment is a **conflict** if it falls inside a busy window. Windows include their start minute and exclude their end minute: with work 08:00–16:00, 08:00 is busy and 16:00 is free. Default windows: Mon–Fri 08:00–16:00 (work) and every day 22:00–05:00 (sleep). A window like 22:00–05:00 that crosses midnight belongs to the day it starts on.
 
 ## 3. No target time: find a good finish
 
 1. **Earliest start** = now + 20 minutes. **Earliest finish** = earliest start + the total of the default durations.
-2. Try finish times from there on, in 15-minute steps, over the next 7 days. Don't try every slot by hand. Use the shape of the recipe instead: put long unattended steps (cold retards, overnight levains) across a busy window, and put the hands-on cluster (mixing, shaping, baking) in free time, such as evenings after 16:00, early mornings 06:00–08:00 and weekends.
+2. Try finish times from there on, in 15-minute steps, over the next 7 days. Don't try every slot by hand. Use the shape of the recipe instead: put long unattended steps (cold retards, overnight levains) across a busy window, and put the hands-on cluster (mixing, shaping, baking) in free time, such as evenings after 16:00, early mornings 05:00–08:00 and weekends.
 3. If a hands-on moment falls into a busy window, adjust **flexible** steps, but only inside their own `min`–`max` and in multiples of their `step`. Lengthen the step before a conflict to push it later, or shorten it to pull it earlier. Never change fixed steps or the bake.
 4. Prefer, in order: no conflicts, then the soonest day, then the smallest total change from the default durations, then the earliest finish on that day.
 5. If no option avoids every conflict, show the one with the fewest and name the conflicting steps.
