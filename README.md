@@ -69,7 +69,7 @@ cd sourdough-planner-skill && ./build.sh    # → dist/plan-sourdough-bake.zip
 | Path | Purpose |
 |---|---|
 | `plan-sourdough-bake/SKILL.md` | The workflow the agent follows (frontmatter also names the license and author) |
-| `plan-sourdough-bake/NOTICE` | Author, license, source link and the Buy Me a Coffee link; ships in the zip but the agent doesn't load it |
+| `plan-sourdough-bake/NOTICE` | Author, license and source link; ships in the zip but the agent doesn't load it |
 | `plan-sourdough-bake/scripts/schedule.py` | Scheduling engine and CLI (backward pass, busy-window search, Markdown / JSON output) |
 | `plan-sourdough-bake/scripts/make_pdf.py` | Renders a schedule (the scheduler's JSON plus the recipe JSON) as a one-page A4 PDF (needs reportlab) |
 | `plan-sourdough-bake/references/recipe-format.md` | Recipe JSON format and rules for converting recipes |
@@ -117,10 +117,6 @@ python3 -m unittest discover tests
 The PDF rendering tests are skipped when reportlab isn't installed.
 
 [`AGENTS.md`](AGENTS.md) holds the development guide (`CLAUDE.md` just imports it for Claude Code): architecture of the engine, the scheduling rules and where they are documented, conventions (stdlib only, Python 3.9+), the cross-check against Schedoughler, and the Git workflow (all work on `main`). Keep `README.md` and `AGENTS.md` up to date with every change.
-
-## Support
-
-If this skill is useful to you, you can support its development with a coffee: [buymeacoffee.com/sboe0705](https://buymeacoffee.com/sboe0705) ☕
 
 ## License
 

@@ -40,7 +40,7 @@ This file is the agent-neutral guide (`AGENTS.md`). `CLAUDE.md` only imports it 
 ```
 plan-sourdough-bake/              # ← the skill itself; everything the agent sees lives here
 ├── SKILL.md                      # frontmatter (name, description, license, metadata.author) + the agent's workflow
-├── NOTICE                        # author, license, repo and Buy Me a Coffee link for people who unpack the zip (not loaded by the agent)
+├── NOTICE                        # author, license and repo link for people who unpack the zip (not loaded by the agent)
 ├── scripts/schedule.py           # scheduling engine + CLI (JSON / Markdown output)
 ├── scripts/make_pdf.py           # one-page A4 PDF from schedule.py's JSON + the recipe JSON (reportlab)
 ├── references/recipe-format.md   # recipe JSON schema, conversion rules, range-inference table
@@ -53,7 +53,6 @@ build.sh                          # packages the skill as a reproducible zip in 
 release.sh                        # tags a release: shows the latest tag and commits since, suggests the next version, pushes
 .github/workflows/build.yml       # CI on push/PR to main: tests (Python 3.9 + 3.x, with reportlab installed), then build.sh → zip artifact (upload-artifact `archive: false`, so the download is the skill zip itself, not a zip-in-zip)
 .github/workflows/release.yml     # on a v* tag: build.sh (with tests) → GitHub release with the zip attached
-.github/FUNDING.yml               # Buy Me a Coffee link for GitHub's sponsor button (also linked in the README's "Support" section)
 README.md                         # public documentation (what it does, install, usage, how it decides)
 AGENTS.md                         # this file: development guide for AI coding agents (and humans)
 CLAUDE.md                         # one line, `@AGENTS.md`, so Claude Code loads this file
@@ -116,7 +115,7 @@ These rules are described in four places: `schedule.py`, `references/manual-sche
 - **`SKILL.md` frontmatter:**
   - `name` must stay `plan-sourdough-bake`: lowercase and hyphens, ≤ 64 characters, matching the folder name.
   - `description` is the trigger text, ≤ 1024 characters.
-  - `license: Apache-2.0` and `metadata.author` carry the attribution. No links in `metadata`, and no donation link anywhere the agent reads (frontmatter, body, references); that link lives in `NOTICE`, the README and `FUNDING.yml`.
+  - `license: Apache-2.0` and `metadata.author` carry the attribution. No links in `metadata`.
   - Keep the body of `SKILL.md` lean and put detail in `references/`.
 - **Changing the JSON output** (field names in `option_json`) changes the skill's contract. Update `SKILL.md` step 4/5, and add fields rather than renaming them. `make_pdf.py` reads `finish`, and per step `title`, `start`, `duration`, `desc`, `ingredients` and `preheat_at`.
 - **The PDF holds only the recipe and the plan.** No notes, assumptions, conflicts or adjustments, and no emoji (the fonts have no glyphs). After layout changes, render it with `pdftoppm` and look at it.
